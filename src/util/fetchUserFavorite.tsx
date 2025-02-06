@@ -8,28 +8,33 @@ export async function fetchUserFavorite(token: SpotifyToken) {
       Authorization: `${token.token_type} ${token.access_token}`
     }
   }
-  const key = import.meta.env.VITE_SPOTIFY_STATE_KEY +"-spotify-data";
+  const key = import.meta.env.VITE_SPOTIFY_STATE_KEY + "-spotify-data";
   const userFavorite = window.localStorage.getItem(key);
 
   // Check if local cache exsits
-  if (!userFavorite) {
+  if (!userFavorite || CryptoJS.AES.decrypt(userFavorite, import.meta.env.VITE_SECRET_PASS).toString(CryptoJS.enc.Utf8) === "null") {
     // Fetch New Results 
     const [topArtist, topSongs] = await Promise.all([
       fetchTopArtist(options),
       fetchTopSongs(options)
     ])
-    
+
     // Save to Local Storage
-    const cipherText = CryptoJS.AES.encrypt(JSON.stringify(userFavorite), import.meta.env.VITE_SECRET_PASS).toString();
-    window.localStorage.setItem(key,cipherText);
+    const cipherText = CryptoJS.AES.encrypt(JSON.stringify({
+      topArtist: topArtist,
+      topSongs: topSongs,
+    }), import.meta.env.VITE_SECRET_PASS).toString();
+    window.localStorage.setItem(key, cipherText);
 
     // Return Data
     return {
       topArtist: topArtist,
       topSongs: topSongs,
     };
-  } 
-  return JSON.parse(CryptoJS.AES.decrypt(userFavorite, import.meta.env.VITE_SECRET_PASS).toString(CryptoJS.enc.Utf8));
+  }
+  else {
+    return JSON.parse(CryptoJS.AES.decrypt(userFavorite, import.meta.env.VITE_SECRET_PASS).toString(CryptoJS.enc.Utf8));
+  }
 }
 
 async function fetchTopArtist(options: any) {
