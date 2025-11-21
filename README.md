@@ -155,9 +155,6 @@ Distributed under the project_license. See `LICENSE.txt` for more information.
 
 <!-- CONTACT -->
 ## Contact
-
-Your Name - [@twitter_handle](https://twitter.com/twitter_handle) - email@email_client.com
-
 Project Link: [https://github.com/jramirez-codes/spotify-genre-critic](https://github.com/jramirez-codes/spotify-genre-critic)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
